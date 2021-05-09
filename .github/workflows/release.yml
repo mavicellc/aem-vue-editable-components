@@ -22,7 +22,7 @@ jobs:
       - name: Build the project
         run: npm run build:production
       - name: Run tests and do code coverage check
-        run: npm run test:coverage
+        run: npm run test:unit
       - name: Release module and publish it in github.com and npmjs.com
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
