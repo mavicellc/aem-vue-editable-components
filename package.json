@@ -29,7 +29,7 @@
     "build:types": "tsc -p src/tsconfig.types.json",
     "build": "npm run clean && npm run linter && webpack && npm run build:types",
     "clean": "rm -rf dist/",
-    "docs": "npx typedoc --excludePrivate /src --out /dist/docs",
+    "docs": "npx typedoc --excludePrivate ./src --out ./dist/docs",
     "linter": "eslint . --fix",
     "semantic-release": "semantic-release",
     "test:unit": "vue-cli-service test:unit"
