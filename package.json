@@ -29,7 +29,7 @@
     "build:types": "tsc -p src/tsconfig.types.json",
     "build": "npm run clean && npm run linter && webpack && npm run build:types",
     "clean": "rm -rf dist/",
-    "docs": "npm i && npx typedoc --excludePrivate ./src --out ./dist/docs",
+    "docs": "npx typedoc --excludePrivate /src --out /dist/docs",
     "linter": "eslint . --fix",
     "semantic-release": "semantic-release",
     "test:unit": "vue-cli-service test:unit"
@@ -38,12 +38,12 @@
     "path-browserify": "^1.0.1"
   },
   "peerDependencies": {
-    "vue": "^2.6.11",
-    "reflect-metadata": "^0.1.13",
-    "vue-class-component": "^7.2.3",
-    "vue-property-decorator": "^9.1.2",
     "@adobe/aem-spa-component-mapping": "^1.0.7",
-    "@adobe/aem-spa-page-model-manager": "^1.0.0"
+    "@adobe/aem-spa-page-model-manager": "^1.0.0",
+    "reflect-metadata": "^0.1.13",
+    "vue": "^2.6.11",
+    "vue-class-component": "^7.2.3",
+    "vue-property-decorator": "^9.1.2"
   },
   "devDependencies": {
     "@adobe/aem-spa-component-mapping": "~1.0.7",
