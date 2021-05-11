@@ -18,7 +18,7 @@ npm install @mavice/aem-vue-editable-components
 * [SPA Architecture](https://docs.adobe.com/content/help/en/experience-manager-65/developing/headless/spas/spa-architecture.html)
 * [Getting Started with the AEM SPA Editor and Angular](https://docs.adobe.com/content/help/en/experience-manager-learn/spa-angular-tutorial/overview.html)
 * [Getting Started with the AEM SPA Editor and React](https://docs.adobe.com/content/help/en/experience-manager-learn/spa-react-tutorial/overview.html)
-* [Getting Started with the AEM SPA Editor and Vue (Coming Soon)](https://docs.adobe.com/content/help/en/experience-manager-learn/spa-react-tutorial/overview.html)
+* [Getting Started with the AEM SPA Editor and Vue](https://www.mavice.com/blog/create-your-first-vue-spa-in-aem/)
 
 ## Contributing
 
