@@ -84,10 +84,10 @@ export class Container extends Mixins(ContainerPropertiesMixins, ContainerStateM
       const itemProps = Utils.modelToProps(this.cqItems[itemKey])
 
       if (itemProps) {
-        const ItemComponent = this.state.componentMapping.get(itemProps.cqType)
+        const ItemComponent = this.state.componentMapping.get(itemProps.cqType);
 
         if (ItemComponent) {
-          return this.connectComponentWithItem(ItemComponent, itemProps, itemKey)
+          return this.connectComponentWithItem(ItemComponent, itemProps, itemKey);
         }
       }
     })

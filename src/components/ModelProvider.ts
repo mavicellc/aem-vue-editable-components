@@ -82,11 +82,11 @@ export class ModelProvider extends Mixins(ModelProviderTypeMixin) {
    * @param cqPath resource path
    */
   updateData (cqPath?: string): void {
-    const { pagePath, itemPath, injectPropsOnInit } = this.$props
+    const { pagePath, itemPath, injectPropsOnInit } = this.$props;
     const path =
       cqPath ||
       this.cqPath ||
-      (pagePath && Utils.getCQPath({ pagePath, itemPath, injectPropsOnInit }))
+      (pagePath && Utils.getCQPath({ pagePath, itemPath, injectPropsOnInit }));
 
     if (!path) {
       return
@@ -114,12 +114,12 @@ export class ModelProvider extends Mixins(ModelProviderTypeMixin) {
   }
 
   mounted () {
-    const { pagePath, itemPath, injectPropsOnInit } = this.$props
-    let { cqPath } = this.$props
-    this.state = this.propsToState(this.$props)
+    const { pagePath, itemPath, injectPropsOnInit } = this.$props;
+    let { cqPath } = this.$props;
+    this.state = this.propsToState(this.$props);
 
-    cqPath = Utils.getCQPath({ pagePath, itemPath, injectPropsOnInit, cqPath })
-    this.state.cqPath = cqPath
+    cqPath = Utils.getCQPath({ pagePath, itemPath, injectPropsOnInit, cqPath });
+    this.state.cqPath = cqPath;
 
     if (this.injectPropsOnInit) {
       this.updateData(cqPath)

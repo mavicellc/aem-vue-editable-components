@@ -9,7 +9,7 @@ This project provides the Vue components and integration layer to get you starte
 
 ## Installation
 ```
-npm install @mavice/aem-vue-editable-components
+npm install @mavice/aem-vue-editable-omponents
 ```
 
 ## Documentation 

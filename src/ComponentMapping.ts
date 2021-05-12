@@ -59,7 +59,7 @@ const withMappable = (
 }
 
 /**
- * Map a React component with the given resource types.
+ * Map a Vue component with the given resource types.
  * If an {@link EditConfig} is provided the component is wrapped to provide editing capabilities on the AEM Page Editor
  *
  * @param resourceTypes List of resource types for which to use the given component.
