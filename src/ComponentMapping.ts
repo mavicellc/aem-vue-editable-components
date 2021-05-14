@@ -36,7 +36,7 @@ const wrappedGetFct = ComponentMapping.get
 
 
 /**
- * Makes a React component mappable to AEM resourceTypes by adding Model config and AEM editing capabilities to it.
+ * Makes a Vue component mappable to AEM resourceTypes by adding Model config and AEM editing capabilities to it.
  *
  * @param component React representation for the component
  * @param editConfig Configuration object for enabling the edition capabilities.
@@ -59,7 +59,7 @@ const withMappable = (
 }
 
 /**
- * Map a React component with the given resource types.
+ * Map a Vue component with the given resource types.
  * If an {@link EditConfig} is provided the component is wrapped to provide editing capabilities on the AEM Page Editor
  *
  * @param resourceTypes List of resource types for which to use the given component.
