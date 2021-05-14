@@ -57,7 +57,7 @@ export class ModelProviderTypeMixin extends Vue {
 
 /**
  * Wraps a portion of the page model into a Component.
- * Fetches content from AEM (using ModelManager) and inject it into the passed React Component.
+ * Fetches content from AEM (using ModelManager) and inject it into the passed Vue Component.
  *
  * @private
  */
@@ -143,7 +143,7 @@ export class ModelProvider extends Mixins(ModelProviderTypeMixin) {
 }
 
 /**
- * @param WrappedComponent React representation for the AEM resource types.
+ * @param WrappedComponent Vue representation for the AEM resource types.
  * @param modelConfig General configuration object.
  */
 export const withModel = (WrappedComponent: VueConstructor, modelConfig: ReloadableModelProperties = {}) => {

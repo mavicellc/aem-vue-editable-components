@@ -99,7 +99,7 @@ export class Container extends Mixins(ContainerPropertiesMixins, ContainerStateM
    * @param ChildComponent
    * @param itemProps
    * @param itemKey
-   * @returns The React element constructed by connecting the values of the input with the Component.
+   * @returns The Vue element constructed by connecting the values of the input with the Component.
    */
   protected connectComponentWithItem (
     ChildComponent: any,
