@@ -13,6 +13,7 @@
 const path = require('path')
 const nodeExternals = require('webpack-node-externals')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
 
 const isProduction = process.env.NODE_ENV === 'production'
 const mode = isProduction ? 'production' : 'development'
@@ -22,6 +23,15 @@ module.exports = {
   entry: './src/types.ts',
   mode,
   devtool,
+  optimization: {
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          keep_classnames: true // eslint-disable-line @typescript-eslint/camelcase
+        }
+      })
+    ]
+  },
   output: {
     globalObject: '(function(){ try{ return typeof self !== \'undefined\';}catch(err){return false;}})() ? self : this',
     path: path.resolve(__dirname, 'dist'),
@@ -49,5 +59,6 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.tsx']
   },
-  plugins: [new CleanWebpackPlugin()]
+  plugins: [
+    new CleanWebpackPlugin()]
 }

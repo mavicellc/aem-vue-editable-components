@@ -1,6 +1,6 @@
 {
   "name": "@mavice/aem-vue-editable-components",
-  "version": "0.0.0-development",
+  "version": "1.0.0",
   "description": "Provides Vue components an integration layer with Adobe Experience Manager Page Editor.",
   "keywords": [
     "spa",
@@ -78,6 +78,7 @@
     "jest": "^26.1.0",
     "reflect-metadata": "^0.1.13",
     "semantic-release": "^17.4.2",
+    "terser-webpack-plugin": "^4.1.2",
     "ts-jest": "^26.1.1",
     "ts-loader": "^8.0.2",
     "typedoc": "^0.20.0",
