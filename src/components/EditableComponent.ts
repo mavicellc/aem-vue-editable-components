@@ -145,6 +145,7 @@ export function withEditable (
   const defaultEditConfig = editConfig || { isEmpty: (props: any) => false }
   return Vue.extend({
     functional: true,
+    name: 'EditableComponent',
     render (createElement: Function, context: RenderContext) {
       return createElement(EditableComponent, {
         attrs: {

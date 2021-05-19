@@ -149,6 +149,7 @@ export class ModelProvider extends Mixins(ModelProviderTypeMixin) {
 export const withModel = (WrappedComponent: VueConstructor, modelConfig: ReloadableModelProperties = {}) => {
   return Vue.extend({
     functional: true,
+    name: 'ModelProvider',
     render (createElement: Function, context: RenderContext) {
       const forceReload = context.props.cqForceReload || modelConfig.forceReload || false
       const injectPropsOnInit = context.props.injectPropsOnInit || modelConfig.injectPropsOnInit || true;
