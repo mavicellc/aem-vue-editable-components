@@ -116,14 +116,13 @@ export default class EditableComponent extends Mixins(EditableComponentPropertie
     return createElement('div', {
       ...this.editProps(),
       class: [(this.containerProps && this.containerProps.className ? this.containerProps.className : '')],
-      key: Math.random()
     }, [
       createElement(this.wrappedComponent, {
         props: {
           ...this.state,
           ...this.componentProperties
         },
-        key: Math.random()
+        key: this.cqPath + '-editable-component'
       }),
       createElement('div', {
         ...this.emptyPlaceholderProps
@@ -157,7 +156,7 @@ export function withEditable (
           editConfig: defaultEditConfig,
           wrappedComponent: WrappedComponent
         },
-        key: Math.random()
+        key: context.props.cqPath + '-editable-component-wrapper'
       })
     }
   })

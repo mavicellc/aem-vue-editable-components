@@ -68,10 +68,9 @@ export class AllowedComponentsContainer extends Mixins(AllowedComponentsProperti
         })
       }
     }
-
     const childComponentsToRender = this.childComponents.map((component, i) =>
       createElement(component, {
-        key: 'child-' + Math.random()
+        key: this.cqPath + '-allowed-component-' + i
       })
     )
     const placeholderComponent = this.placeholderComponent()
