@@ -20,6 +20,7 @@ import { CreateElement, RenderContext } from 'vue'
 const withEditorContext = (Component: any): any => {
   return Vue.extend({
     functional: true,
+    name: 'EditorContext',
     render (createElement: CreateElement, context: RenderContext) {
       return createElement(Component, {
         attrs: {

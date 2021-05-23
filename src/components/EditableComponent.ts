@@ -116,14 +116,13 @@ export default class EditableComponent extends Mixins(EditableComponentPropertie
     return createElement('div', {
       ...this.editProps(),
       class: [(this.containerProps && this.containerProps.className ? this.containerProps.className : '')],
-      key: Math.random()
     }, [
       createElement(this.wrappedComponent, {
         props: {
           ...this.state,
           ...this.componentProperties
         },
-        key: Math.random()
+        key: this.cqPath + '-editable-component'
       }),
       createElement('div', {
         ...this.emptyPlaceholderProps
@@ -145,6 +144,7 @@ export function withEditable (
   const defaultEditConfig = editConfig || { isEmpty: (props: any) => false }
   return Vue.extend({
     functional: true,
+    name: 'EditableComponent',
     render (createElement: Function, context: RenderContext) {
       return createElement(EditableComponent, {
         attrs: {
@@ -156,7 +156,7 @@ export function withEditable (
           editConfig: defaultEditConfig,
           wrappedComponent: WrappedComponent
         },
-        key: Math.random()
+        key: context.props.cqPath + '-editable-component-wrapper'
       })
     }
   })

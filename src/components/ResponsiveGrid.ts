@@ -40,7 +40,7 @@ export class ResponsiveGrid extends Mixins(ResponsiveGridPropertiesMixin, Allowe
 
   containerAttrs (): {} {
     return {
-      class: Constants._CONTAINER_CLASS_NAMES + ' ' + this.gridClassNames,
+      class: Constants._CONTAINER_CLASS_NAMES + ' ' + this.gridClassNames ,
       attrs: {
         'data-cq-data-path': this.isInEditor ? this.cqPath : ''
       }
@@ -60,7 +60,6 @@ export class ResponsiveGrid extends Mixins(ResponsiveGridPropertiesMixin, Allowe
     itemPath: string
   ): { [key: string]: string } {
     const attrs = Utils.modelToProps(this.cqItems[itemKey])
-
     attrs.className = attrs.className || ''
     attrs.className +=
       this.columnClassNames && this.columnClassNames[itemKey]

@@ -111,16 +111,16 @@ export class Container extends Mixins(ContainerPropertiesMixins, ContainerStateM
     const containerProps = this.getItemComponentProps(itemPath, itemKey, itemPath)
 
     return Vue.extend({
+      name: 'ChildComponent',
       render (createElement: CreateElement) {
         return createElement(ChildComponent, {
           props: {
             ...itemProps,
-            key: itemPath,
             cqPath: itemPath,
             isInEditor: isInEditor,
             containerProps: containerProps
           },
-          key: itemPath
+          key: itemPath + '-container'
         })
       }
     })
@@ -173,6 +173,7 @@ export class Container extends Mixins(ContainerPropertiesMixins, ContainerStateM
     }
 
     return Vue.extend({
+      name: 'PlaceholderComponent',
       render (createElement: CreateElement) {
         return createElement(ContainerPlaceholder, {
           props: {

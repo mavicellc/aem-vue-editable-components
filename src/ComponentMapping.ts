@@ -74,7 +74,7 @@ ComponentMapping.map = function map (
   editConfig?: EditConfig,
   config?: ReloadableModelProperties
 ) {
-  const { injectPropsOnInit = false, ...rest } = config || {}
+  const { injectPropsOnInit = true, ...rest } = config || {}
   const innerComponent = withMappable(component, editConfig, {
     injectPropsOnInit,
     ...rest
@@ -104,6 +104,7 @@ type MappingContextFunction = (props: any) => JSX.Element;
 function withComponentMappingContext (Component: VueConstructor) {
   return Vue.extend({
     functional: true,
+    name: 'ComponentMappingContext',
     render (createElement: CreateElement, context: RenderContext) {
       return createElement(Component, {
         props: {

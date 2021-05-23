@@ -15,7 +15,7 @@
  */
 
 import 'reflect-metadata'
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import {Component, Mixins, Prop, Watch} from 'vue-property-decorator'
 import {
   Model,
   ModelManager,
@@ -53,6 +53,7 @@ export class ModelProviderTypeMixin extends Vue {
   @Prop() pagePath?: string;
   @Prop() itemPath?: string;
   @Prop({ default: false }) cqForceReload?: boolean;
+  @Prop({ default: {} }) containerProps?: {};
 }
 
 /**
@@ -96,9 +97,10 @@ export class ModelProvider extends Mixins(ModelProviderTypeMixin) {
       .then((data: Model) => {
         if (data && Object.keys(data).length > 0) {
           this.state = {
-            ...this.state,
-            ...Utils.modelToProps(data)
+              ...this.state,
+              ...Utils.modelToProps(data)
           }
+
           // Fire event once component model has been fetched and rendered to enable editing on AEM
           if (injectPropsOnInit && Utils.isInEditor()) {
             PathUtils.dispatchGlobalCustomEvent(
@@ -137,7 +139,7 @@ export class ModelProvider extends Mixins(ModelProviderTypeMixin) {
       props: {
         ...this.state
       },
-      key: Math.random()
+      key: this.cqPath +'-model-provider'
     })
   }
 }
@@ -149,6 +151,7 @@ export class ModelProvider extends Mixins(ModelProviderTypeMixin) {
 export const withModel = (WrappedComponent: VueConstructor, modelConfig: ReloadableModelProperties = {}) => {
   return Vue.extend({
     functional: true,
+    name: 'ModelProvider',
     render (createElement: Function, context: RenderContext) {
       const forceReload = context.props.cqForceReload || modelConfig.forceReload || false
       const injectPropsOnInit = context.props.injectPropsOnInit || modelConfig.injectPropsOnInit || true;
@@ -162,7 +165,7 @@ export const withModel = (WrappedComponent: VueConstructor, modelConfig: Reloada
           injectPropsOnInit: injectPropsOnInit,
           wrappedComponent: WrappedComponent
         },
-        key: Math.random()
+        key: context.props.cqPath + '-model-provider-wrapper-'
       })
     }
   })

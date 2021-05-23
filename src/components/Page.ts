@@ -61,6 +61,7 @@ export class Page extends Mixins(PagePropertiesMixin, Container) {
       const isInEditor = this.isInEditor
       if (ItemComponent) {
         return Vue.extend({
+          name: 'Page',
           render (createElement: CreateElement) {
             return createElement(ItemComponent, {
               props: {
@@ -69,7 +70,7 @@ export class Page extends Mixins(PagePropertiesMixin, Container) {
                 cqPath: itemProps.cqPath,
                 isInEditor: isInEditor
               },
-              key: i
+              key: itemKey +  '-page'
             })
           }
         })
