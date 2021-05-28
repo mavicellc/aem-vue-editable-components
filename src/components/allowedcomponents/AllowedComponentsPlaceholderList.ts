@@ -15,7 +15,7 @@
  */
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import { PlaceHolderModel } from '../ContainerPlaceholder'
-import { AllowedComponent, AllowedComponents } from './AllowedComponentsContainer'
+import { AllowedComponent } from './AllowedComponentsContainer'
 import { AllowedComponentPlaceholder } from './AllowedComponentsPlaceholder'
 import { CreateElement } from 'vue'
 

@@ -59,8 +59,8 @@ export class AllowedComponentsContainer extends Mixins(AllowedComponentsProperti
       if (_allowedComponentPlaceholderListEmptyLabel) {
         return createElement(AllowedComponentPlaceholderList, {
           props: {
-            title: title,
-            emptyLabel: emptyLabel,
+            title,
+            emptyLabel,
             components: allowedComponents.components,
             placeholderProps: this.placeholderProps,
             cqPath: this.cqPath
@@ -75,7 +75,9 @@ export class AllowedComponentsContainer extends Mixins(AllowedComponentsProperti
     )
     const placeholderComponent = this.placeholderComponent()
 
-    if (placeholderComponent) childComponentsToRender.push(createElement(placeholderComponent))
+    if (placeholderComponent) {
+      childComponentsToRender.push(createElement(placeholderComponent))
+    }
 
     return createElement(
       'div',

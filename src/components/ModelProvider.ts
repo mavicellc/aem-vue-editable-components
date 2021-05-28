@@ -15,7 +15,7 @@
  */
 
 import 'reflect-metadata'
-import {Component, Mixins, Prop, Watch} from 'vue-property-decorator'
+import { Component, Prop } from 'vue-property-decorator'
 import {
   Model,
   ModelManager,
@@ -40,21 +40,6 @@ export interface ReloadableModelProperties {
   injectPropsOnInit?: boolean;
 }
 
-/*
- * @private
- */
-@Component({
-  components: {}
-})
-export class ModelProviderTypeMixin extends Vue {
-  @Prop({ default: {} }) wrappedComponent!: VueConstructor;
-  @Prop() cqPath!: string;
-  @Prop({ default: true }) injectPropsOnInit?: boolean;
-  @Prop() pagePath?: string;
-  @Prop() itemPath?: string;
-  @Prop({ default: false }) cqForceReload?: boolean;
-  @Prop({ default: {} }) containerProps?: {};
-}
 
 /**
  * Wraps a portion of the page model into a Component.
@@ -65,8 +50,15 @@ export class ModelProviderTypeMixin extends Vue {
 @Component({
   components: {}
 })
-export class ModelProvider extends Mixins(ModelProviderTypeMixin) {
+export class ModelProvider extends Vue {
   @Prop() isInEditor?: boolean;
+  @Prop({ default: {} }) wrappedComponent!: VueConstructor;
+  @Prop() cqPath!: string;
+  @Prop({ default: true }) injectPropsOnInit?: boolean;
+  @Prop() pagePath?: string;
+  @Prop() itemPath?: string;
+  @Prop({ default: false }) cqForceReload?: boolean;
+  @Prop() containerProps!: { [key: string]: string };
 
   public propsToState (props: any) {
     // Keep private properties from being passed as state
@@ -83,11 +75,11 @@ export class ModelProvider extends Mixins(ModelProviderTypeMixin) {
    * @param cqPath resource path
    */
   updateData (cqPath?: string): void {
-    const { pagePath, itemPath, injectPropsOnInit } = this.$props;
+    const { pagePath, itemPath, injectPropsOnInit } = this.$props
     const path =
       cqPath ||
       this.cqPath ||
-      (pagePath && Utils.getCQPath({ pagePath, itemPath, injectPropsOnInit }));
+      (pagePath && Utils.getCQPath({ pagePath, itemPath, injectPropsOnInit }))
 
     if (!path) {
       return
@@ -97,10 +89,9 @@ export class ModelProvider extends Mixins(ModelProviderTypeMixin) {
       .then((data: Model) => {
         if (data && Object.keys(data).length > 0) {
           this.state = {
-              ...this.state,
-              ...Utils.modelToProps(data)
+            ...this.state,
+            ...Utils.modelToProps(data)
           }
-
           // Fire event once component model has been fetched and rendered to enable editing on AEM
           if (injectPropsOnInit && Utils.isInEditor()) {
             PathUtils.dispatchGlobalCustomEvent(
@@ -116,12 +107,12 @@ export class ModelProvider extends Mixins(ModelProviderTypeMixin) {
   }
 
   mounted () {
-    const { pagePath, itemPath, injectPropsOnInit } = this.$props;
-    let { cqPath } = this.$props;
-    this.state = this.propsToState(this.$props);
+    const { pagePath, itemPath, injectPropsOnInit } = this.$props
+    let { cqPath } = this.$props
+    this.state = this.propsToState(this.$props)
 
-    cqPath = Utils.getCQPath({ pagePath, itemPath, injectPropsOnInit, cqPath });
-    this.state.cqPath = cqPath;
+    cqPath = Utils.getCQPath({ pagePath, itemPath, injectPropsOnInit, cqPath })
+    this.state.cqPath = cqPath
 
     if (this.injectPropsOnInit) {
       this.updateData(cqPath)
@@ -154,7 +145,7 @@ export const withModel = (WrappedComponent: VueConstructor, modelConfig: Reloada
     name: 'ModelProvider',
     render (createElement: Function, context: RenderContext) {
       const forceReload = context.props.cqForceReload || modelConfig.forceReload || false
-      const injectPropsOnInit = context.props.injectPropsOnInit || modelConfig.injectPropsOnInit || true;
+      const injectPropsOnInit = context.props.injectPropsOnInit || modelConfig.injectPropsOnInit || true
       return createElement(ModelProvider, {
         attrs: {
           ...context.data.attrs
@@ -162,7 +153,7 @@ export const withModel = (WrappedComponent: VueConstructor, modelConfig: Reloada
         props: {
           ...context.props,
           cqForceReload: forceReload,
-          injectPropsOnInit: injectPropsOnInit,
+          injectPropsOnInit,
           wrappedComponent: WrappedComponent
         },
         key: context.props.cqPath + '-model-provider-wrapper-'

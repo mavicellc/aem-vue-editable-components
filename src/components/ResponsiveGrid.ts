@@ -15,43 +15,37 @@
  */
 
 import { MapTo, withComponentMappingContext } from '../ComponentMapping'
-import {
-  AllowedComponentsContainer, AllowedComponentsPropertiesMixin
-} from './allowedcomponents/AllowedComponentsContainer'
+import { AllowedComponentsContainer } from './allowedcomponents/AllowedComponentsContainer'
 import { PlaceHolderModel } from './ContainerPlaceholder'
 import { EditConfig } from './EditableComponent'
 import { Constants } from '../Constants'
-import { Component, Prop, Mixins } from 'vue-property-decorator'
-import Utils from '../Utils'
+import { Component, Prop } from 'vue-property-decorator'
+import { callVueSuperMethod, getVueSuperComputedProp } from '../vue-utils'
 
 @Component({
   components: {}
 })
-export class ResponsiveGridPropertiesMixin extends Mixins(AllowedComponentsPropertiesMixin) {
+export class ResponsiveGrid extends AllowedComponentsContainer {
   @Prop({ default: () => {} }) columnClassNames!: { [key: string]: string };
   @Prop({ default: '' }) gridClassNames?: string;
-}
 
-@Component({
-  components: {}
-})
-export class ResponsiveGrid extends Mixins(ResponsiveGridPropertiesMixin, AllowedComponentsContainer) {
   _allowedComponentPlaceholderListEmptyLabel!: string;
 
-  containerAttrs (): {} {
-    return {
-      class: Constants._CONTAINER_CLASS_NAMES + ' ' + this.gridClassNames ,
-      attrs: {
-        'data-cq-data-path': this.isInEditor ? this.cqPath : ''
-      }
-    }
+  containerAttrs (): {[key: string]: string} {
+    const attrs = callVueSuperMethod(this, 'containerAttrs')
+
+    attrs.class = (attrs.class || '') + ' ' + this.gridClassNames
+    attrs.attrs = { 'data-cq-data-path': this.isInEditor ? this.cqPath : '' }
+
+    return attrs
   }
 
   get placeholderProps (): PlaceHolderModel {
-    return {
-      placeholderClassNames: Constants.NEW_SECTION_CLASS_NAMES + ' ' + Constants._RESPONSIVE_GRID_PLACEHOLDER_CLASS_NAMES,
-      cqPath: this.cqPath
-    }
+    const props = getVueSuperComputedProp(this, 'placeholderProps')
+
+    props.placeholderClassNames = (props.placeholderClassNames || '') + ' ' + Constants._RESPONSIVE_GRID_PLACEHOLDER_CLASS_NAMES
+
+    return props
   }
 
   getItemComponentProps (
@@ -59,7 +53,8 @@ export class ResponsiveGrid extends Mixins(ResponsiveGridPropertiesMixin, Allowe
     itemKey: string,
     itemPath: string
   ): { [key: string]: string } {
-    const attrs = Utils.modelToProps(this.cqItems[itemKey])
+    const attrs = callVueSuperMethod(this, 'getItemComponentProps', [item, itemKey, itemPath])
+
     attrs.className = attrs.className || ''
     attrs.className +=
       this.columnClassNames && this.columnClassNames[itemKey]

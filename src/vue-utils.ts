@@ -1,4 +1,4 @@
-export function callVueSuperMethod (vueComponent: any, methodName: string, parameters = []) {
+export function callVueSuperMethod (vueComponent: any, methodName: string, parameters: Array<any> = []) {
   return vueComponent.constructor.super.options.methods[methodName].apply(vueComponent, parameters)
 }
 

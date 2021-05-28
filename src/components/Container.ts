@@ -120,8 +120,8 @@ export class Container extends Mixins(ContainerPropertiesMixins, ContainerStateM
           props: {
             ...itemProps,
             cqPath: itemPath,
-            isInEditor: isInEditor,
-            containerProps: containerProps
+            isInEditor,
+            containerProps
           },
           key: itemPath + '-container'
         })
@@ -132,18 +132,17 @@ export class Container extends Mixins(ContainerPropertiesMixins, ContainerStateM
   /**
    * Returns the properties to add on a specific child component.
    *
-   * @param item
-   * @param itemKey
-   * @param itemPath
    * @returns The map of properties.
+   * @param _item
+   * @param _itemKey
+   * @param _itemPath
    */
-  /* eslint-disable @typescript-eslint/no-unused-vars */
   getItemComponentProps (
-    item: any,
-    itemKey: string,
-    itemPath: string
+    _item: any,
+    _itemKey: string,
+    _itemPath: string
   ): { [key: string]: string } {
-    return Utils.modelToProps(this.cqItems[itemKey])
+    return {}
   }
 
   /**
@@ -192,22 +191,28 @@ export class Container extends Mixins(ContainerPropertiesMixins, ContainerStateM
    *
    * @returns The map of properties.
    */
-  containerAttrs (): {} {
-    return {
-      class: [Constants._CONTAINER_CLASS_NAMES],
-      attrs: {
-        'data-cq-data-path': this.isInEditor ? this.cqPath : ''
-      }
+  containerAttrs (): {[key: string]: string} {
+    const dataObject: { [key: string]: any } = {
+      class: Constants._CONTAINER_CLASS_NAMES,
+      attrs: {}
     }
+
+    if (this.isInEditor) {
+      dataObject.attrs[Constants.DATA_PATH_ATTR] = this.cqPath
+    }
+
+    return dataObject
   }
 
   render (createElement: CreateElement) {
-    const childComponentsToRender = this.childComponents.map((component) =>
+    const childComponentsToRender = this.childComponents.map(component =>
       createElement(component)
     )
     const placeholderComponent = this.placeholderComponent()
 
-    if (placeholderComponent) childComponentsToRender.push(createElement(placeholderComponent))
+    if (placeholderComponent) { 
+      childComponentsToRender.push(createElement(placeholderComponent))
+    }
 
     return createElement(
       'div',

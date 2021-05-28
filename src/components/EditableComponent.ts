@@ -15,10 +15,10 @@
  */
 
 import 'reflect-metadata'
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Prop } from 'vue-property-decorator'
 import { Constants } from '../Constants'
 import Vue, { CreateElement, RenderContext, VueConstructor } from 'vue'
-import {ComponentMapping} from "@adobe/aem-spa-component-mapping";
+import { ComponentMapping } from '@adobe/aem-spa-component-mapping'
 
 /**
  * Configuration object of the withEditable function.
@@ -36,10 +36,13 @@ export interface EditConfig {
   cqForceReload?: boolean;
 }
 
+/**
+ * The EditableComponent provides components with editing capabilities.
+ */
 @Component({
   components: {}
 })
-export class EditableComponentProperties extends Vue {
+export default class EditableComponent extends Vue {
   @Prop() componentProperties!: any;
   @Prop() editConfig!: EditConfig;
   @Prop() wrappedComponent!: VueConstructor;
@@ -48,15 +51,7 @@ export class EditableComponentProperties extends Vue {
   @Prop({ default: false }) isInEditor!: boolean;
   @Prop({ default: '' }) cqPath!: string;
   @Prop({}) componentMapping?: ComponentMapping;
-}
 
-/**
- * The EditableComponent provides components with editing capabilities.
- */
-@Component({
-  components: {}
-})
-export default class EditableComponent extends Mixins(EditableComponentProperties) {
   state = this.propsToState(this.$props)
 
   propsToState (props: any): any {
@@ -70,7 +65,7 @@ export default class EditableComponent extends Mixins(EditableComponentPropertie
   /**
    * Properties related to the editing of the component.
    */
-  editProps() {
+  editProps () {
     const componentProperties = this.componentProperties
 
     if (componentProperties && !componentProperties.isInEditor) {
