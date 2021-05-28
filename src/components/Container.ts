@@ -72,25 +72,28 @@ export class Container extends Mixins(ContainerPropertiesMixins, ContainerStateM
    * Returns the child components of this Container.
    * It will instantiate the child components if mapping exists.
    *
-   * @returns An array with the components instantiated to JSX
+   * @returns An array with Vue components
    */
   get childComponents (): VueConstructor[] {
     if (!this.cqItems || !this.cqItemsOrder) {
       return []
     }
 
-    // @ts-ignore
-    return this.cqItemsOrder.map<VueConstructor>(itemKey => {
+    const childComponents: Array<any> = []
+
+    this.cqItemsOrder.forEach((itemKey) => {
       const itemProps = Utils.modelToProps(this.cqItems[itemKey])
 
       if (itemProps) {
-        const ItemComponent = this.state.componentMapping.get(itemProps.cqType);
+        const ItemComponent = this.state.componentMapping.get(itemProps.cqType)
 
         if (ItemComponent) {
-          return this.connectComponentWithItem(ItemComponent, itemProps, itemKey);
+          childComponents.push(this.connectComponentWithItem(ItemComponent, itemProps, itemKey))
         }
       }
     })
+
+    return childComponents
   }
 
   /**
