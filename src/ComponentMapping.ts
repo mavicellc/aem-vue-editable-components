@@ -34,7 +34,6 @@ const wrappedMapFct = ComponentMapping.map
  */
 const wrappedGetFct = ComponentMapping.get
 
-
 /**
  * Makes a Vue component mappable to AEM resourceTypes by adding Model config and AEM editing capabilities to it.
  *
@@ -51,11 +50,8 @@ const withMappable = (
   const { injectPropsOnInit = true, forceReload = false, ...rest } =
     config || {}
   const configToUse: ReloadableModelProperties = { injectPropsOnInit, forceReload, ...rest }
-  let innerComponent: VueConstructor = component
 
-  innerComponent = withEditorContext(withModel(withEditable(innerComponent, editConfig), configToUse))
-
-  return innerComponent
+  return withEditorContext(withModel(withEditable(component, editConfig), configToUse))
 }
 
 /**
@@ -98,8 +94,6 @@ const MapTo = (resourceTypes: string | string[]): MapperFunction => {
     return ComponentMapping.map(resourceTypes, clazz, config)
   }
 }
-
-type MappingContextFunction = (props: any) => JSX.Element;
 
 function withComponentMappingContext (Component: VueConstructor) {
   return Vue.extend({
