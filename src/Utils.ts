@@ -108,8 +108,8 @@ const Utils = {
     let { cqPath = '' } = componentProps
 
     if (injectPropsOnInit && !cqPath) {
-        cqPath = itemPath ? `${pagePath}/jcr:content/${itemPath}` : pagePath;
-        }
+      cqPath = itemPath ? `${pagePath}/jcr:content/${itemPath}` : pagePath;
+    }
     return cqPath
   }
 }
