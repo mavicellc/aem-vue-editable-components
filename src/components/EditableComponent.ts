@@ -15,7 +15,7 @@
  */
 
 import 'reflect-metadata'
-import { Component, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Constants } from '../Constants'
 import Vue, { CreateElement, RenderContext, VueConstructor } from 'vue'
 import { ComponentMapping } from '@adobe/aem-spa-component-mapping'
@@ -36,13 +36,10 @@ export interface EditConfig {
   cqForceReload?: boolean;
 }
 
-/**
- * The EditableComponent provides components with editing capabilities.
- */
 @Component({
   components: {}
 })
-export default class EditableComponent extends Vue {
+export class EditableComponentProperties extends Vue {
   @Prop() componentProperties!: any;
   @Prop() editConfig!: EditConfig;
   @Prop() wrappedComponent!: VueConstructor;
@@ -51,7 +48,15 @@ export default class EditableComponent extends Vue {
   @Prop({ default: false }) isInEditor!: boolean;
   @Prop({ default: '' }) cqPath!: string;
   @Prop({}) componentMapping?: ComponentMapping;
+}
 
+/**
+ * The EditableComponent provides components with editing capabilities.
+ */
+@Component({
+  components: {}
+})
+export default class EditableComponent extends Mixins(EditableComponentProperties) {
   state = this.propsToState(this.$props)
 
   propsToState (props: any): any {

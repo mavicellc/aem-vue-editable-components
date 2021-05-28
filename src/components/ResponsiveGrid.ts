@@ -15,20 +15,27 @@
  */
 
 import { MapTo, withComponentMappingContext } from '../ComponentMapping'
-import { AllowedComponentsContainer } from './allowedcomponents/AllowedComponentsContainer'
+import {
+  AllowedComponentsContainer, AllowedComponentsPropertiesMixin
+} from './allowedcomponents/AllowedComponentsContainer'
 import { PlaceHolderModel } from './ContainerPlaceholder'
 import { EditConfig } from './EditableComponent'
 import { Constants } from '../Constants'
-import { Component, Prop } from 'vue-property-decorator'
+import { Component, Prop, Mixins } from 'vue-property-decorator'
 import { callVueSuperMethod, getVueSuperComputedProp } from '../vue-utils'
 
 @Component({
   components: {}
 })
-export class ResponsiveGrid extends AllowedComponentsContainer {
+export class ResponsiveGridPropertiesMixin extends Mixins(AllowedComponentsPropertiesMixin) {
   @Prop({ default: () => {} }) columnClassNames!: { [key: string]: string };
   @Prop({ default: '' }) gridClassNames?: string;
+}
 
+@Component({
+  components: {}
+})
+export class ResponsiveGrid extends Mixins(ResponsiveGridPropertiesMixin, AllowedComponentsContainer) {
   _allowedComponentPlaceholderListEmptyLabel!: string;
 
   containerAttrs (): {[key: string]: string} {
