@@ -120,7 +120,6 @@ export class Container extends Mixins(ContainerPropertiesMixins, ContainerStateM
             isInEditor: isInEditor,
             containerProps: containerProps
           },
-          key: itemPath + '-container'
         })
       }
     })

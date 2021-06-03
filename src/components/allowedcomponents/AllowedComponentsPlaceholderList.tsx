@@ -76,7 +76,6 @@ export class AllowedComponentPlaceholderList extends Vue {
       }),
       components.map((component, i) =>
         createElement(AllowedComponentPlaceholder, {
-          key: component.path + '-placeholder',
           props: {
             path: component.path,
             emptyLabel: component.title

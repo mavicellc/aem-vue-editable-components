@@ -112,17 +112,21 @@ export default class EditableComponent extends Mixins(EditableComponentPropertie
     )
   }
 
+  get className () {
+    return `${this.componentProperties.cssClassNames ? this.componentProperties.cssClassNames : ''} ${(this.state.componentProperties.containerProps && this.state.componentProperties.containerProps.className ? this.state.componentProperties.containerProps.className : '')}`
+  }
+
   render (createElement: CreateElement) {
     return createElement('div', {
       ...this.editProps(),
-      class: [(this.containerProps && this.containerProps.className ? this.containerProps.className : '')],
+      class: [this.className],
     }, [
       createElement(this.wrappedComponent, {
         props: {
           ...this.state,
           ...this.componentProperties
         },
-        key: this.cqPath + '-editable-component'
+        key: this.className
       }),
       createElement('div', {
         ...this.emptyPlaceholderProps
@@ -156,7 +160,6 @@ export function withEditable (
           editConfig: defaultEditConfig,
           wrappedComponent: WrappedComponent
         },
-        key: context.props.cqPath + '-editable-component-wrapper'
       })
     }
   })

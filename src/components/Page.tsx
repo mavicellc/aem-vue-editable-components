@@ -70,7 +70,6 @@ export class Page extends Mixins(PagePropertiesMixin, Container) {
                 cqPath: itemProps.cqPath,
                 isInEditor: isInEditor
               },
-              key: itemKey +  '-page'
             })
           }
         })
