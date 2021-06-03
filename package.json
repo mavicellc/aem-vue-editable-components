@@ -8,7 +8,17 @@
     "vue",
     "adobe"
   ],
-  "author": "Mavice LLC",
+  "contributors": [
+    {
+      "name": "Mavice LLC",
+      "email": "info@mavice.com",
+      "url": "https://mavice.com"
+    },
+    {
+      "name": "William Blocker",
+      "email": "blocker.william3@gmail.com"
+    }
+  ],
   "license": "Apache-2.0",
   "homepage": "https://mavice.com",
   "repository": {
