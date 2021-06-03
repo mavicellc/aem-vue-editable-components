@@ -15,7 +15,7 @@
  */
 
 import 'reflect-metadata'
-import {Component, Mixins, Prop, Watch} from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import {
   Model,
   ModelManager,
@@ -53,7 +53,8 @@ export class ModelProviderTypeMixin extends Vue {
   @Prop() pagePath?: string;
   @Prop() itemPath?: string;
   @Prop({ default: false }) cqForceReload?: boolean;
-  @Prop({ default: {} }) containerProps?: {};
+  @Prop({ default: () => {} }) containerProps?: {};
+  @Prop({ default: '' }) itemKey?: string;
 }
 
 /**
@@ -76,52 +77,59 @@ export class ModelProvider extends Mixins(ModelProviderTypeMixin) {
     return state
   }
 
-  state = this.propsToState(this.$props);
+  state = this.$props
+
+  get childProps () {
+    return this.state
+  }
+
+  set childProps (props: any) {
+    this.state = {
+      ...this.state,
+      ...props
+    }
+  }
 
   /**
    * Update model based on given resource path.
    * @param cqPath resource path
    */
   updateData (cqPath?: string): void {
-    const { pagePath, itemPath, injectPropsOnInit } = this.$props;
+    const { pagePath, itemPath, injectPropsOnInit } = this.$props
     const path =
-      cqPath ||
-      this.cqPath ||
-      (pagePath && Utils.getCQPath({ pagePath, itemPath, injectPropsOnInit }));
+        cqPath ||
+        this.cqPath ||
+        (pagePath && Utils.getCQPath({ pagePath, itemPath, injectPropsOnInit }))
 
     if (!path) {
       return
     }
 
     ModelManager.getData({ path, forceReload: this.cqForceReload })
-      .then((data: Model) => {
-        if (data && Object.keys(data).length > 0) {
-          this.state = {
-              ...this.state,
-              ...Utils.modelToProps(data)
+        .then((data: Model) => {
+          if (data && Object.keys(data).length > 0) {
+            this.childProps = Utils.modelToProps(data)
+            // Fire event once component model has been fetched and rendered to enable editing on AEM
+            if (injectPropsOnInit && Utils.isInEditor()) {
+              PathUtils.dispatchGlobalCustomEvent(
+                  Constants.ASYNC_CONTENT_LOADED_EVENT,
+                  {}
+              )
+            }
           }
-
-          // Fire event once component model has been fetched and rendered to enable editing on AEM
-          if (injectPropsOnInit && Utils.isInEditor()) {
-            PathUtils.dispatchGlobalCustomEvent(
-              Constants.ASYNC_CONTENT_LOADED_EVENT,
-              {}
-            )
-          }
-        }
-      })
-      .catch(error => {
-        console.log(error)
-      })
+        })
+        .catch(error => {
+          console.log(error)
+        })
   }
 
   mounted () {
-    const { pagePath, itemPath, injectPropsOnInit } = this.$props;
-    let { cqPath } = this.$props;
-    this.state = this.propsToState(this.$props);
+    const { pagePath, itemPath, injectPropsOnInit } = this.$props
+    let { cqPath } = this.$props
+    this.childProps = Utils.modelToProps(this.$props)
 
-    cqPath = Utils.getCQPath({ pagePath, itemPath, injectPropsOnInit, cqPath });
-    this.state.cqPath = cqPath;
+    cqPath = Utils.getCQPath({ pagePath, itemPath, injectPropsOnInit, cqPath })
+    this.state.cqPath = cqPath
 
     if (this.injectPropsOnInit) {
       this.updateData(cqPath)
@@ -134,14 +142,16 @@ export class ModelProvider extends Mixins(ModelProviderTypeMixin) {
     ModelManager.removeListener(this.cqPath, this.updateData)
   }
 
-  render (createElement: Function) {
-    return createElement(this.wrappedComponent, {
-      props: {
-        ...this.state
-      },
-      key: this.cqPath +'-model-provider'
-    })
+  /**
+   *  Computed getter used to keep track of changes with the CSS classes.
+   */
+  get className () {
+    return (this.state.containerProps && this.state.containerProps.class) || ''
   }
+
+  render (createElement: Function) {
+    const Component = this.wrappedComponent
+    return <Component props={this.childProps} key={this.className}/>  }
 }
 
 /**
@@ -151,21 +161,23 @@ export class ModelProvider extends Mixins(ModelProviderTypeMixin) {
 export const withModel = (WrappedComponent: VueConstructor, modelConfig: ReloadableModelProperties = {}) => {
   return Vue.extend({
     functional: true,
+    // props:['allowedComponents', 'columnClassNames', 'columnCount', 'containerProps', 'cqItems', 'cqItemsOrder', 'cqPath', 'cqType', 'gridClassnNames', 'isInEditor', 'itemPath', 'pagePath'],
     name: 'ModelProvider',
     render (createElement: Function, context: RenderContext) {
       const forceReload = context.props.cqForceReload || modelConfig.forceReload || false
-      const injectPropsOnInit = context.props.injectPropsOnInit || modelConfig.injectPropsOnInit || true;
+      const injectPropsOnInit = context.props.injectPropsOnInit || modelConfig.injectPropsOnInit || true
       return createElement(ModelProvider, {
         attrs: {
-          ...context.data.attrs
+            ...context.data.attrs
         },
         props: {
           ...context.props,
+          ...context.data,
           cqForceReload: forceReload,
           injectPropsOnInit: injectPropsOnInit,
           wrappedComponent: WrappedComponent
         },
-        key: context.props.cqPath + '-model-provider-wrapper-'
+        key: context.props.containerProps ? context.props.cqPath + context.props.containerProps.class : context.props.cqPath
       })
     }
   })

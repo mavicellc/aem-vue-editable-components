@@ -16,11 +16,9 @@
 
 import { ModelManager, PathUtils } from '@adobe/aem-spa-page-model-manager';
 import { ModelProvider, withModel } from '../../src/components/ModelProvider';
-import { Constants } from '../../src/Constants';
 import 'reflect-metadata'
 import { mount } from "@vue/test-utils";
 import { Component, Prop, Mixins, Vue } from 'vue-property-decorator'
-import { MappedComponentPropertiesMixin } from '../../src/components/Container';
 import Utils from '../../src/Utils';
 
 describe('ModelProvider ->', () => {

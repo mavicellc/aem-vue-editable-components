@@ -34,12 +34,6 @@ export class ContainerPlaceholder extends Vue {
   @Prop() cqPath!: string;
 
   render (createElement: Function) {
-    return createElement('div', {
-      class: this.placeholderClassNames,
-      attrs: {
-        'data-cq-data-path': this.cqPath + '/*'
-      },
-      components: {}
-    })
+    return <div class={this.placeholderClassNames} data-cq-data-path={this.cqPath + '/*'} />
   }
 }

@@ -16,7 +16,7 @@
 
 import 'reflect-metadata'
 import { Component, Vue, Prop, Mixins } from 'vue-property-decorator'
-import { CreateElement, VueConstructor } from 'vue'
+import { VNode } from 'vue'
 import { Model } from '@adobe/aem-spa-page-model-manager'
 import { ComponentMapping } from '../ComponentMapping'
 import { Constants } from '../Constants'
@@ -74,20 +74,19 @@ export class Container extends Mixins(ContainerPropertiesMixins, ContainerStateM
    *
    * @returns An array with the components instantiated to JSX
    */
-  get childComponents (): VueConstructor[] {
+  get childComponents (): VNode[] {
     if (!this.cqItems || !this.cqItemsOrder) {
       return []
     }
-
     // @ts-ignore
-    return this.cqItemsOrder.map<VueConstructor>(itemKey => {
+    return this.cqItemsOrder.map<VNode>(itemKey => {
       const itemProps = Utils.modelToProps(this.cqItems[itemKey])
 
       if (itemProps) {
-        const ItemComponent = this.state.componentMapping.get(itemProps.cqType);
+        const ItemComponent = this.state.componentMapping.get(itemProps.cqType)
 
         if (ItemComponent) {
-          return this.connectComponentWithItem(ItemComponent, itemProps, itemKey);
+          return this.connectComponentWithItem(ItemComponent, itemProps, itemKey)
         }
       }
     })
@@ -102,28 +101,20 @@ export class Container extends Mixins(ContainerPropertiesMixins, ContainerStateM
    * @returns The Vue element constructed by connecting the values of the input with the Component.
    */
   protected connectComponentWithItem (
-    ChildComponent: any,
-    itemProps: any,
-    itemKey: string
-  ): VueConstructor {
+      ChildComponent: any,
+      itemProps: any,
+      itemKey: any
+  ): VNode {
     const itemPath = this.getItemPath(itemKey)
     const isInEditor = this.isInEditor
     const containerProps = this.getItemComponentProps(itemPath, itemKey, itemPath)
-
-    return Vue.extend({
-      name: 'ChildComponent',
-      render (createElement: CreateElement) {
-        return createElement(ChildComponent, {
-          props: {
-            ...itemProps,
-            cqPath: itemPath,
-            isInEditor: isInEditor,
-            containerProps: containerProps
-          },
-          key: itemPath + '-container'
-        })
-      }
-    })
+    return <ChildComponent
+        props={itemProps}
+        cqPath={itemPath}
+        isInEditor={isInEditor}
+        itemKey={containerProps.columnClassNames && containerProps.columnClassNames[itemKey]}
+        containerProps={containerProps}
+    />
   }
 
   /**
@@ -136,9 +127,9 @@ export class Container extends Mixins(ContainerPropertiesMixins, ContainerStateM
    */
   /* eslint-disable @typescript-eslint/no-unused-vars */
   getItemComponentProps (
-    item: any,
-    itemKey: string,
-    itemPath: string
+      item: any,
+      itemKey: string,
+      itemPath: string
   ): { [key: string]: string } {
     return Utils.modelToProps(this.cqItems[itemKey])
   }
@@ -154,6 +145,24 @@ export class Container extends Mixins(ContainerPropertiesMixins, ContainerStateM
   }
 
   /**
+   * The properties for the root element of the container.
+   *
+   * @returns The map of properties.
+   */
+  get containerAttrs (): any {
+    const props: any = {
+      class: Constants._CONTAINER_CLASS_NAMES,
+      attrs: {}
+    }
+
+    if (this.isInEditor) {
+      props.attrs[Constants.DATA_PATH_ATTR] = this.cqPath
+    }
+
+    return props
+  }
+
+  /**
    * The properties for the placeholder component in root element.
    *
    * @returns The map of properties to be added.
@@ -165,55 +174,20 @@ export class Container extends Mixins(ContainerPropertiesMixins, ContainerStateM
     }
   }
 
-  placeholderComponent (): VueConstructor | null {
+  placeholderComponent (): VNode | null {
     const placeholderProps = this.placeholderProps
 
     if (!this.isInEditor) {
       return null
     }
 
-    return Vue.extend({
-      name: 'PlaceholderComponent',
-      render (createElement: CreateElement) {
-        return createElement(ContainerPlaceholder, {
-          props: {
-            ...placeholderProps
-          }
-        })
-      }
-    })
+    return <ContainerPlaceholder cqPath={placeholderProps.cqPath} placeholderClassNames={placeholderProps.placeholderClassNames} />
   }
 
-  /**
-   * The properties for the root element of the container.
-   *
-   * @returns The map of properties.
-   */
-  containerAttrs (): {} {
-    return {
-      class: [Constants._CONTAINER_CLASS_NAMES],
-      attrs: {
-        'data-cq-data-path': this.isInEditor ? this.cqPath : ''
-      }
-    }
-  }
-
-  render (createElement: CreateElement) {
-    const childComponentsToRender = this.childComponents.map((component) =>
-      createElement(component)
-    )
-    const placeholderComponent = this.placeholderComponent()
-
-    if (placeholderComponent) childComponentsToRender.push(createElement(placeholderComponent))
-
-    return createElement(
-      'div',
-      {
-        ...this.containerAttrs()
-      },
-      [
-        ...childComponentsToRender
-      ]
-    )
+  render (createElement: Function) {
+    return <div {...this.containerAttrs}>
+      {this.childComponents}
+      {this.placeholderComponent()}
+    </div>
   }
 }

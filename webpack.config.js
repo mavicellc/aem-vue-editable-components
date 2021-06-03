@@ -45,7 +45,7 @@ module.exports = {
         test: /\.ts$|\.tsx$/,
         exclude: /(node_modules|dist)/,
         use: {
-          loader: 'ts-loader'
+          loader: 'babel-loader'
         },
         enforce: 'post'
       }
@@ -57,7 +57,7 @@ module.exports = {
     })
   ],
   resolve: {
-    extensions: ['.ts', '.tsx']
+    extensions: ['.ts', '.tsx', '.js', '.jsx']
   },
   plugins: [
     new CleanWebpackPlugin()]

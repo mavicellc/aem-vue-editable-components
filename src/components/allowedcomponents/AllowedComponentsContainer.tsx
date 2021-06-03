@@ -17,7 +17,6 @@
 import { Prop, Vue, Mixins, Component } from 'vue-property-decorator'
 import { Container } from '../Container'
 import { AllowedComponentPlaceholderList } from './AllowedComponentsPlaceholderList'
-import { CreateElement } from 'vue'
 
 /**
  * Component that is allowed to be used on the page by the editor.
@@ -51,40 +50,26 @@ export class AllowedComponentsPropertiesMixin extends Vue {
   components: {}
 })
 export class AllowedComponentsContainer extends Mixins(AllowedComponentsPropertiesMixin, Container) {
-  render (createElement: CreateElement) {
+  render (createElement: Function) {
     const { allowedComponents, _allowedComponentPlaceholderListEmptyLabel, title, isInEditor } = this
     const emptyLabel = _allowedComponentPlaceholderListEmptyLabel as string
 
     if (isInEditor && allowedComponents && allowedComponents.applicable) {
       if (_allowedComponentPlaceholderListEmptyLabel) {
-        return createElement(AllowedComponentPlaceholderList, {
-          props: {
-            title: title,
-            emptyLabel: emptyLabel,
-            components: allowedComponents.components,
-            placeholderProps: this.placeholderProps,
-            cqPath: this.cqPath
-          }
-        })
+        return <AllowedComponentPlaceholderList
+            title={title}
+            emptyLabel={emptyLabel}
+            components={allowedComponents.components}
+            placeholderProps={this.placeholderProps}
+            cqPath={this.cqPath}/>
       }
     }
-    const childComponentsToRender = this.childComponents.map((component, i) =>
-      createElement(component, {
-        key: this.cqPath + '-allowed-component-' + i
-      })
-    )
+
     const placeholderComponent = this.placeholderComponent()
 
-    if (placeholderComponent) childComponentsToRender.push(createElement(placeholderComponent))
-
-    return createElement(
-      'div',
-      {
-        ...this.containerAttrs()
-      },
-      [
-        ...childComponentsToRender
-      ]
-    )
+    return <div {...this.containerAttrs}>
+      { this.childComponents }
+      { placeholderComponent }
+    </div>
   }
 }
