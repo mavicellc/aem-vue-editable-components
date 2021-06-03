@@ -15,7 +15,7 @@
  */
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import { PlaceHolderModel } from '../ContainerPlaceholder'
-import { AllowedComponent, AllowedComponents } from './AllowedComponentsContainer'
+import { AllowedComponent } from './AllowedComponentsContainer'
 import { AllowedComponentPlaceholder } from './AllowedComponentsPlaceholder'
 import { CreateElement } from 'vue'
 
@@ -54,7 +54,7 @@ export class AllowedComponentPlaceholderList extends Vue {
   @Prop({ default: '' }) title?: string;
   @Prop({ default: '' }) cqPath?: string;
 
-  render (createElement: CreateElement) {
+  render (createElement: Function) {
     const { components, placeholderProps, title, emptyLabel } = this
     const listLabel = (components && (components.length > 0)) ? title : emptyLabel
     let className = ALLOWED_PLACEHOLDER_CLASS_NAMES
@@ -63,25 +63,11 @@ export class AllowedComponentPlaceholderList extends Vue {
       className += ' ' + placeholderProps.placeholderClassNames
     }
 
-    return createElement('div', {
-      attrs: {
-        class: className
-      }
-    }, [
-      createElement('div', {
-        class: ALLOWED_COMPONENT_TITLE_CLASS_NAMES,
-        attrs: {
-          'data-text': listLabel
-        }
-      }),
-      components.map((component, i) =>
-        createElement(AllowedComponentPlaceholder, {
-          props: {
-            path: component.path,
-            emptyLabel: component.title
-          }
-        })
-      )
-    ])
+    return <div class={className}>
+    <div class={ALLOWED_COMPONENT_TITLE_CLASS_NAMES} data-text={listLabel}></div>
+    {components.map((component) =>
+        <AllowedComponentPlaceholder path={component.path} emptyLabel={component.title} />
+    )}
+    </div>
   }
 }

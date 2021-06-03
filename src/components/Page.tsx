@@ -15,14 +15,13 @@
  */
 
 import 'reflect-metadata'
-import { Component, Prop, Vue, Mixins } from 'vue-property-decorator'
+import { Component, Prop, Mixins } from 'vue-property-decorator'
 import { Model } from '@adobe/aem-spa-page-model-manager'
 import { Constants } from '../Constants'
 import Utils from '../Utils'
 import { ComponentMapping } from '../ComponentMapping'
-import { VueConstructor } from 'vue/types/umd'
 import { Container, ContainerPropertiesMixins } from './Container'
-import { CreateElement } from 'vue'
+import { VNode } from 'vue'
 
 export interface PageModel extends Model {
   ':type': string;
@@ -46,64 +45,53 @@ export class Page extends Mixins(PagePropertiesMixin, Container) {
     componentMapping: this.componentMapping || ComponentMapping
   };
 
+  get containerAttrs (): {} {
+    const props: any = {
+      class: Constants._PAGE_CLASS_NAMES,
+      attrs: {}
+    }
+
+    if (this.isInEditor) {
+      props.attrs[Constants.DATA_PATH_ATTR] = this.cqPath
+    }
+
+    return props
+  }
+
   /**
    * @returns The child pages of a page.
    */
-  get childPages (): VueConstructor[] {
+  get childPages (): VNode[] {
     if (!this.cqChildren) {
       return []
     }
 
     // @ts-ignore
-    return Object.keys(this.cqChildren).map<VueConstructor>((itemKey, i) => {
+    return Object.keys(this.cqChildren).map<VNode>((itemKey) => {
       const itemProps = Utils.modelToProps(this.cqChildren[itemKey])
       const ItemComponent: any = this.state.componentMapping.get(itemProps.cqType)
       const isInEditor = this.isInEditor
+
       if (ItemComponent) {
-        return Vue.extend({
-          name: 'Page',
-          render (createElement: CreateElement) {
-            return createElement(ItemComponent, {
-              props: {
-                ...itemProps,
-                containerProps: itemProps,
-                cqPath: itemProps.cqPath,
-                isInEditor: isInEditor
-              },
-            })
-          }
-        })
+        return <ItemComponent
+            cqPath={itemProps.cqPath}
+            isInEditor={isInEditor}
+            props={itemProps}
+        />
       }
     })
   }
 
   getItemPath (itemKey: string) {
     return this.cqPath
-      ? this.cqPath + '/' + Constants.JCR_CONTENT + '/' + itemKey
-      : itemKey
-  }
-
-  containerAttrs (): {} {
-    return {
-      class: [Constants._PAGE_CLASS_NAMES],
-      attrs: {
-        'data-cq-data-path': this.isInEditor ? this.cqPath : ''
-      }
-    }
+        ? this.cqPath + '/' + Constants.JCR_CONTENT + '/' + itemKey
+        : itemKey
   }
 
   render (createElement: Function) {
-    return createElement(
-      'div',
-      {
-        class: [Constants._PAGE_CLASS_NAMES],
-        attrs: {
-          'data-cq-data-path': this.cqPath
-        }
-      }, [
-        ...this.childComponents.map((component) => createElement(component)),
-        ...this.childPages.map((page) => createElement(page))
-      ]
-    )
+    return <div {...this.containerAttrs}>
+      {this.childComponents}
+      {this.childPages}
+    </div>
   }
 }

@@ -17,8 +17,7 @@
 import 'reflect-metadata'
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Constants } from '../Constants'
-import Vue, { CreateElement, RenderContext, VueConstructor } from 'vue'
-import {ComponentMapping} from "@adobe/aem-spa-component-mapping";
+import Vue, { RenderContext, VueConstructor } from 'vue'
 
 /**
  * Configuration object of the withEditable function.
@@ -47,7 +46,6 @@ export class EditableComponentProperties extends Vue {
   @Prop({ default: false }) cqForceReload?: boolean;
   @Prop({ default: false }) isInEditor!: boolean;
   @Prop({ default: '' }) cqPath!: string;
-  @Prop({}) componentMapping?: ComponentMapping;
 }
 
 /**
@@ -57,20 +55,14 @@ export class EditableComponentProperties extends Vue {
   components: {}
 })
 export default class EditableComponent extends Mixins(EditableComponentProperties) {
-  state = this.propsToState(this.$props)
-
-  propsToState (props: any): any {
-    // Keep private properties from being passed as state
-    /* eslint-disable @typescript-eslint/no-unused-vars */
-    const { wrappedComponent, containerProps, editConfig, ...state } = props
-
-    return state
+  get state () {
+    return this.$props
   }
 
   /**
    * Properties related to the editing of the component.
    */
-  editProps() {
+  get editProps () {
     const componentProperties = this.componentProperties
 
     if (componentProperties && !componentProperties.isInEditor) {
@@ -79,21 +71,8 @@ export default class EditableComponent extends Mixins(EditableComponentPropertie
 
     return {
       attrs: {
-        'data-cq-data-path': componentProperties.cqPath,
+        'data-cq-data-path': componentProperties && componentProperties.cqPath,
         'data-cq-resource-type': this.editConfig.resourceType ? this.editConfig.resourceType : ''
-      }
-    }
-  }
-
-  protected get emptyPlaceholderProps () {
-    if (!this.useEmptyPlaceholder()) {
-      return null
-    }
-
-    return {
-      class: Constants._PLACEHOLDER_CLASS_NAMES,
-      attrs: {
-        'data-emptytext': this.editConfig.emptyLabel
       }
     }
   }
@@ -103,35 +82,39 @@ export default class EditableComponent extends Mixins(EditableComponentPropertie
    *
    * @return
    */
-  public useEmptyPlaceholder () {
+  useEmptyPlaceholder () {
     return (
-      this.componentProperties &&
-      this.componentProperties.isInEditor &&
-      typeof this.editConfig.isEmpty === 'function' &&
-      this.editConfig.isEmpty(this.componentProperties)
+        this.componentProperties &&
+        this.componentProperties.isInEditor &&
+        typeof this.editConfig.isEmpty === 'function' &&
+        this.editConfig.isEmpty(this.componentProperties)
     )
   }
 
-  get className () {
-    return `${this.componentProperties.cssClassNames ? this.componentProperties.cssClassNames : ''} ${(this.state.componentProperties.containerProps && this.state.componentProperties.containerProps.className ? this.state.componentProperties.containerProps.className : '')}`
+  protected get emptyPlaceholderProps () {
+    if (!this.useEmptyPlaceholder()) {
+      return null
+    }
+
+    return {
+      class: Constants._PLACEHOLDER_CLASS_NAMES,
+      'data-emptytext': this.editConfig.emptyLabel
+    }
   }
 
-  render (createElement: CreateElement) {
-    return createElement('div', {
-      ...this.editProps(),
-      class: [this.className],
-    }, [
-      createElement(this.wrappedComponent, {
-        props: {
-          ...this.state,
-          ...this.componentProperties
-        },
-        key: this.className
-      }),
-      createElement('div', {
-        ...this.emptyPlaceholderProps
-      })
-    ])
+  /**
+   *  Computed getter used to keep track of changes with the CSS classes.
+   */
+  get className () {
+    return `${this.componentProperties.cssClassNames ? this.componentProperties.cssClassNames : ''} ${(this.state.containerProps && this.state.containerProps.class ? this.state.containerProps.class : '')}`
+  }
+
+  render (createElement: Function) {
+    const Component = this.wrappedComponent
+    return <div {...this.editProps} class={this.className}>
+      <Component props={this.state.componentProperties} componentProperties={this.state.componentProperties} key={this.className}/>
+      <div {...this.emptyPlaceholderProps} />
+    </div>
   }
 }
 
@@ -142,8 +125,8 @@ export default class EditableComponent extends Mixins(EditableComponentPropertie
  * @param editConfig
  */
 export function withEditable (
-  WrappedComponent: VueConstructor,
-  editConfig?: EditConfig
+    WrappedComponent: VueConstructor,
+    editConfig?: EditConfig
 ): VueConstructor {
   const defaultEditConfig = editConfig || { isEmpty: (props: any) => false }
   return Vue.extend({
@@ -156,10 +139,11 @@ export function withEditable (
         },
         props: {
           ...context.props,
-          componentProperties: context.props,
+          ...context.data,
+          componentProperties: { ...context.props, ...context.data },
           editConfig: defaultEditConfig,
           wrappedComponent: WrappedComponent
-        },
+        }
       })
     }
   })

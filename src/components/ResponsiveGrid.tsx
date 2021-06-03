@@ -38,13 +38,17 @@ export class ResponsiveGridPropertiesMixin extends Mixins(AllowedComponentsPrope
 export class ResponsiveGrid extends Mixins(ResponsiveGridPropertiesMixin, AllowedComponentsContainer) {
   _allowedComponentPlaceholderListEmptyLabel!: string;
 
-  containerAttrs (): {} {
-    return {
-      class: Constants._CONTAINER_CLASS_NAMES + ' ' + this.gridClassNames ,
-      attrs: {
-        'data-cq-data-path': this.isInEditor ? this.cqPath : ''
-      }
+  get containerAttrs (): any {
+    const props: any = {
+      class: `${Constants._CONTAINER_CLASS_NAMES} ${this.gridClassNames}`,
+      attrs: {}
     }
+
+    if (this.isInEditor) {
+      props.attrs[Constants.DATA_PATH_ATTR] = this.cqPath
+    }
+
+    return props
   }
 
   get placeholderProps (): PlaceHolderModel {
@@ -55,18 +59,19 @@ export class ResponsiveGrid extends Mixins(ResponsiveGridPropertiesMixin, Allowe
   }
 
   getItemComponentProps (
-    item: any,
-    itemKey: string,
-    itemPath: string
+      item: any,
+      itemKey: string,
+      itemPath: string
   ): { [key: string]: string } {
-    const attrs = Utils.modelToProps(this.cqItems[itemKey])
-    attrs.className = attrs.className || ''
-    attrs.className +=
-      this.columnClassNames && this.columnClassNames[itemKey]
-        ? ' ' + this.columnClassNames[itemKey]
-        : ''
+    const props = Utils.modelToProps(this.cqItems[itemKey])
 
-    return attrs
+    props.class = props.className || ''
+    props.class +=
+        this.columnClassNames && this.columnClassNames[itemKey]
+            ? ' ' + this.columnClassNames[itemKey]
+            : ''
+
+    return props
   }
 }
 
@@ -80,6 +85,6 @@ const config: EditConfig = {
 }
 
 MapTo('wcm/foundation/components/responsivegrid')(
-  withComponentMappingContext(ResponsiveGrid),
-  config
+    withComponentMappingContext(ResponsiveGrid),
+    config
 )

@@ -50,7 +50,7 @@ export class AllowedComponentsPropertiesMixin extends Vue {
   components: {}
 })
 export class AllowedComponentsContainer extends Mixins(AllowedComponentsPropertiesMixin, Container) {
-  render () {
+  render (createElement: Function) {
     const { allowedComponents, _allowedComponentPlaceholderListEmptyLabel, title, isInEditor } = this
     const emptyLabel = _allowedComponentPlaceholderListEmptyLabel as string
 
@@ -58,18 +58,18 @@ export class AllowedComponentsContainer extends Mixins(AllowedComponentsProperti
       if (_allowedComponentPlaceholderListEmptyLabel) {
         return <AllowedComponentPlaceholderList
             title={title}
-        emptyLabel={emptyLabel}
-        components={allowedComponents.components}
-        placeholderProps={this.placeholderProps}
-        cqPath={this.cqPath}/>
+            emptyLabel={emptyLabel}
+            components={allowedComponents.components}
+            placeholderProps={this.placeholderProps}
+            cqPath={this.cqPath}/>
       }
     }
 
     const placeholderComponent = this.placeholderComponent()
 
     return <div {...this.containerAttrs}>
-        { this.childComponents }
-    { placeholderComponent }
+      { this.childComponents }
+      { placeholderComponent }
     </div>
   }
 }

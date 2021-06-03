@@ -149,14 +149,9 @@ export class ModelProvider extends Mixins(ModelProviderTypeMixin) {
     return (this.state.containerProps && this.state.containerProps.class) || ''
   }
 
-  get component () {
-    const Component = this.wrappedComponent
-    return <Component props={this.childProps} key={this.className}/>
-  }
-
   render (createElement: Function) {
-    return this.component
-  }
+    const Component = this.wrappedComponent
+    return <Component props={this.childProps} key={this.className}/>  }
 }
 
 /**
@@ -172,6 +167,9 @@ export const withModel = (WrappedComponent: VueConstructor, modelConfig: Reloada
       const forceReload = context.props.cqForceReload || modelConfig.forceReload || false
       const injectPropsOnInit = context.props.injectPropsOnInit || modelConfig.injectPropsOnInit || true
       return createElement(ModelProvider, {
+        attrs: {
+            ...context.data.attrs
+        },
         props: {
           ...context.props,
           ...context.data,

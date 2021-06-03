@@ -50,12 +50,6 @@ export class AllowedComponentPlaceholder extends Vue {
   public render (createElement: Function) {
     const { path, emptyLabel } = this
 
-    return createElement('div', {
-      attrs: {
-        'data-cq-data-path': path,
-        'data-emptytext': emptyLabel,
-        class: ALLOWED_COMPONENT_PLACEHOLDER_CLASS_NAMES
-      }
-    })
+    return <div data-cq-data-path={path} data-emptytext={emptyLabel} class={ALLOWED_COMPONENT_PLACEHOLDER_CLASS_NAMES}></div>
   }
 }
