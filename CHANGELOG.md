@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/mavicellc/aem-vue-editable-components/compare/v1.0.1...v1.0.2) (2021-06-03)
+
+
+### Bug Fixes
+
+* **modelprovider/editablecomponent:** fixes layout mode not updating after a change ([20df0e5](https://github.com/mavicellc/aem-vue-editable-components/commit/20df0e512aca8590e4b9a5fa6023efaa5340e476))
+
 ## [1.0.1](https://github.com/mavicellc/aem-vue-editable-components/compare/v1.0.0...v1.0.1) (2021-05-23)
 
 
