@@ -46,6 +46,7 @@ export class EditableComponentProperties extends Vue {
   @Prop({ default: false }) cqForceReload?: boolean;
   @Prop({ default: false }) isInEditor!: boolean;
   @Prop({ default: '' }) cqPath!: string;
+  @Prop({ default: false }) aemNoDecoration!: boolean;
 }
 
 /**
@@ -111,10 +112,15 @@ export default class EditableComponent extends Mixins(EditableComponentPropertie
 
   render (createElement: Function) {
     const Component = this.wrappedComponent
-    return <div {...this.editProps} class={this.className}>
-      <Component props={this.state.componentProperties} componentProperties={this.state.componentProperties} key={this.className}/>
-      <div {...this.emptyPlaceholderProps} />
-    </div>
+    const componentElement = <Component props={this.state.componentProperties} componentProperties={this.state.componentProperties} key={this.className}/>
+    if (!this.isInEditor && this.aemNoDecoration) {
+      return componentElement
+    } else {
+      return <div {...this.editProps} class={this.className}>
+        {componentElement}
+        <div {...this.emptyPlaceholderProps} />
+      </div>
+    }
   }
 }
 
