@@ -35,7 +35,7 @@
   "main": "dist/aem-vue-editable-components.js",
   "types": "dist/types.d.ts",
   "scripts": {
-    "build:production": "cross-env NODE_ENV=production npm run test:unit && npm run build",
+    "build:production": "cross-env-shell NODE_ENV=production \"npm run test:unit && npm run build\"",
     "build:types": "tsc -p src/tsconfig.types.json",
     "build": "npm run clean && npm run linter && webpack && npm run build:types",
     "clean": "rm -rf dist/",
