@@ -98,7 +98,9 @@ export default class EditableComponent extends Mixins(EditableComponentPropertie
 
     return {
       class: Constants._PLACEHOLDER_CLASS_NAMES,
-      'data-emptytext': this.editConfig.emptyLabel
+      attrs: {
+        'data-emptytext': this.editConfig.emptyLabel
+      }
     }
   }
 
