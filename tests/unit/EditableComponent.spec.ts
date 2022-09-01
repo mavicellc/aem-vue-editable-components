@@ -98,6 +98,7 @@ describe('EditableComponent ->', () => {
             const vm = mount(withEditable(ChildComponent, EDIT_CONFIG), {
                 attachTo: rootNode,
                 propsData: {
+                    isInEditor: true,
                     ...CQ_PROPS
                 }
             });
@@ -106,7 +107,7 @@ describe('EditableComponent ->', () => {
             const node = vm.find(DATA_PATH_ATTRIBUTE_SELECTOR + ' .' + CHILD_COMPONENT_CLASS_NAME +
                 ' + .' + Constants._PLACEHOLDER_CLASS_NAMES + EMPTY_TEXT_SELECTOR);
 
-            expect(node.exists()).toBe(false);
+            expect(node.exists()).toBe(true);
         });
 
         it('should declare the component to be empty without providing a label', () => {
@@ -133,28 +134,6 @@ describe('EditableComponent ->', () => {
 
             expect(node.exists()).toBe(true);
         });
-
-        it('should declare the component to be empty with a provided label', () => {
-            const EDIT_CONFIG = {
-                isEmpty: function() {
-                    return true;
-                },
-                emptyLabel: EMPTY_LABEL
-            };
-
-            const vm = mount(withEditable(ChildComponent, EDIT_CONFIG), {
-                attachTo: rootNode,
-                propsData: {
-                    isInEditor: true,
-                    ...CQ_PROPS
-                }
-            });
-
-            let node = vm.find(DATA_PATH_ATTRIBUTE_SELECTOR + ' .' + Constants._PLACEHOLDER_CLASS_NAMES + EMPTY_TEXT_SELECTOR);
-
-            expect(node.exists()).toBe(true);
-        });
-
 
         it('should declare the component as not being in the editor', () => {
             const EDIT_CONFIG = {
