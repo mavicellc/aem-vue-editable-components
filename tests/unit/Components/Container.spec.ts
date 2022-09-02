@@ -203,4 +203,24 @@ describe('Container ->', () => {
             expect(container).toBeDefined();
         });
     });
+
+    describe('container decoration ->', () => {
+
+        it('if aemNoDecoration is set to true, there should not be a container div wrapper', () => {
+            const vm = mount(Container, {
+                attachTo: rootNode,
+                propsData: {
+                    componentMapping: ComponentMapping,
+                    cqPath: CONTAINER_PATH,
+                    isInEditor: false,
+                    aemNoDecoration: true
+                }
+            });
+
+            const container = vm.find('.aem-container');
+
+            expect(container.exists()).toBe(false);
+        });
+    });
+
 });

@@ -27,6 +27,7 @@ describe('EditableComponent ->', () => {
     const COMPONENT_RESOURCE_TYPE = '/component/resource/type';
     const COMPONENT_PATH = '/path/to/component';
     const CHILD_COMPONENT_CLASS_NAME = 'child-class';
+    const CHILD_COMPONENT_APPLIED_STYLE_CLASS_NAME = 'my_custom_style';
     const IN_EDITOR_CLASS_NAME = 'in-editor-class';
     const EMPTY_LABEL = 'Empty Label';
     const EMPTY_TEXT_SELECTOR = '[data-emptytext="' + EMPTY_LABEL + '"]';
@@ -35,7 +36,8 @@ describe('EditableComponent ->', () => {
 
     const CQ_PROPS = {
         'cqType': COMPONENT_RESOURCE_TYPE,
-        'cqPath': COMPONENT_PATH
+        'cqPath': COMPONENT_PATH,
+        'cssClassNames' : CHILD_COMPONENT_APPLIED_STYLE_CLASS_NAME
     };
 
     let rootNode: any;
@@ -226,6 +228,32 @@ describe('EditableComponent ->', () => {
             });
 
             const node = vm.find(DATA_RESOURCE_TYPE_SELECTOR);
+
+            expect(node.exists()).toBe(false);
+        });
+    });
+
+    describe('component decoration ->', () => {
+
+        it('if aemNoDecoration is set to true, there should not be a component div wrapper', () => {
+            const EDIT_CONFIG = {
+                isEmpty: function() {
+                    return false;
+                },
+                emptyLabel: EMPTY_LABEL,
+                resourceType: COMPONENT_RESOURCE_TYPE
+            };
+
+            const vm = mount(withEditable(ChildComponent, EDIT_CONFIG), {
+                attachTo: rootNode,
+                propsData: {
+                    isInEditor: false,
+                    aemNoDecoration: true,
+                    ...CQ_PROPS
+                }
+            });
+
+            const node = vm.find('.' + CQ_PROPS.cssClassNames);
 
             expect(node.exists()).toBe(false);
         });
