@@ -68,6 +68,7 @@ export class ModelProviderTypeMixin extends Vue {
 })
 export class ModelProvider extends Mixins(ModelProviderTypeMixin) {
   @Prop() isInEditor?: boolean;
+  @Prop() aemNoDecoration?: boolean;
 
   public propsToState (props: any) {
     // Keep private properties from being passed as state

@@ -22,6 +22,7 @@ import { ComponentMapping } from '../ComponentMapping'
 import { Constants } from '../Constants'
 import Utils from '../Utils'
 import { ContainerPlaceholder, PlaceHolderModel } from './ContainerPlaceholder'
+import { Fragment } from 'vue-frag'
 
 /**
  * Hold force reload state.
@@ -42,6 +43,7 @@ export class ReloadForceAbleMixin extends Vue {
 export class MappedComponentPropertiesMixin extends Mixins(ReloadForceAbleMixin) {
   @Prop({ default: false }) isInEditor!: boolean;
   @Prop({ default: '' }) cqPath!: string;
+  @Prop({ default: false }) aemNoDecoration!: boolean;
 }
 
 @Component({
@@ -61,7 +63,7 @@ export class ContainerPropertiesMixins extends Mixins(MappedComponentPropertiesM
 }
 
 @Component({
-  components: {}
+  components: { Fragment }
 })
 export class Container extends Mixins(ContainerPropertiesMixins, ContainerStateMixin) {
   readonly state = {
@@ -185,9 +187,15 @@ export class Container extends Mixins(ContainerPropertiesMixins, ContainerStateM
   }
 
   render (createElement: Function) {
-    return <div {...this.containerAttrs}>
-      {this.childComponents}
-      {this.placeholderComponent()}
-    </div>
+    if (!this.isInEditor && this.aemNoDecoration) {
+      return <fragment>
+        {this.childComponents}
+      </fragment>
+    } else {
+      return <div {...this.containerAttrs}>
+        {this.childComponents}
+        {this.placeholderComponent()}
+      </div>
+    }
   }
 }
