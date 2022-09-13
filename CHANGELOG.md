@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/mavicellc/aem-vue-editable-components/compare/v1.0.2...v1.1.0) (2022-09-13)
+
+
+### Features
+
+* **modelprovider:** prefetch model data before rendering component on the server ([70be9f8](https://github.com/mavicellc/aem-vue-editable-components/commit/70be9f8c9d5ec5c4ac6a5f99f01dac97d6658311))
+
 ## [1.0.2](https://github.com/mavicellc/aem-vue-editable-components/compare/v1.0.1...v1.0.2) (2021-06-03)
 
 
