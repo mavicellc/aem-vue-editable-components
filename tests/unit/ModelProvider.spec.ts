@@ -18,6 +18,7 @@ import { ModelManager, PathUtils } from '@adobe/aem-spa-page-model-manager';
 import { ModelProvider, withModel } from '../../src/components/ModelProvider';
 import 'reflect-metadata'
 import { mount } from "@vue/test-utils";
+import { renderToString } from '@vue/server-test-utils';
 import { Component, Prop, Mixins, Vue } from 'vue-property-decorator'
 import Utils from '../../src/Utils';
 
@@ -25,7 +26,8 @@ describe('ModelProvider ->', () => {
     const TEST_PAGE_PATH = '/page/jcr:content/root';
     const ROOT_NODE_CLASS_NAME = 'root-class';
     const INNER_COMPONENT_ID = 'innerContent';
-    const TEST_COMPONENT_MODEL = { ':type': 'test/components/componentchild' };
+    const COMPONENT_RESOURCE_TYPE = '/component/resource/type';
+    const TEST_COMPONENT_MODEL = { ':type': COMPONENT_RESOURCE_TYPE };
 
     let rootNode: any;
 
@@ -35,6 +37,7 @@ describe('ModelProvider ->', () => {
         @Prop({ default: false }) cqForceReload?: boolean;
         @Prop({ default: false }) isInEditor!: boolean;
         @Prop({ default: '' }) cqPath!: string;
+        @Prop({ default: '' }) cqType!: string;
     }
 
     @Component
@@ -43,7 +46,8 @@ describe('ModelProvider ->', () => {
             return createElement('div', {
                 attrs: {
                     id: INNER_COMPONENT_ID,
-                    class: this.className
+                    class: this.className,
+                    cqType: this.cqType
                 },
                 domProps: {
                     innerHTML: 'Dummy'
@@ -295,4 +299,21 @@ describe('ModelProvider ->', () => {
             expect(removeListenerSpy).toHaveBeenCalledWith(TEST_PAGE_PATH, expect.any(Function));
         });
     });
+
+    describe('SSR ->', () => {
+        it('should prefetch model data before rendering components on the server', async () => {
+            const DummyWithModel = withModel(Dummy, { injectPropsOnInit: true });
+
+            const output = await renderToString(DummyWithModel, {
+                propsData: {
+                    cqPath: TEST_PAGE_PATH,
+                }
+            });
+
+            expect(getDataSpy).toHaveBeenCalledWith({ path: TEST_PAGE_PATH, forceReload: false });
+
+            expect(output).toContain(COMPONENT_RESOURCE_TYPE);
+        });
+    });
+
 });

@@ -95,7 +95,7 @@ export class ModelProvider extends Mixins(ModelProviderTypeMixin) {
    * Update model based on given resource path.
    * @param cqPath resource path
    */
-  updateData (cqPath?: string): void {
+  updateData (cqPath?: string): Promise<boolean | void> | undefined {
     const { pagePath, itemPath, injectPropsOnInit } = this.$props
     const path =
         cqPath ||
@@ -106,7 +106,7 @@ export class ModelProvider extends Mixins(ModelProviderTypeMixin) {
       return
     }
 
-    ModelManager.getData({ path, forceReload: this.cqForceReload })
+    return ModelManager.getData({ path, forceReload: this.cqForceReload })
         .then((data: Model) => {
           if (data && Object.keys(data).length > 0) {
             this.childProps = Utils.modelToProps(data)
@@ -122,6 +122,12 @@ export class ModelProvider extends Mixins(ModelProviderTypeMixin) {
         .catch(error => {
           console.log(error)
         })
+  }
+
+  serverPrefetch () {
+    if (this.injectPropsOnInit) {
+      return this.updateData()
+    }
   }
 
   mounted () {
